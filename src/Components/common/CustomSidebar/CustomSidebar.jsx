@@ -21,12 +21,19 @@ const MENU_ITEMS = [
     },
 ]
 
-function Navbar() {
+function Navbar(props) {
+
+    const handleClick = (e) => {
+        props.history.push(e.key)
+    }
+
+    const currentPage = props.history.location.pathname;
+
     return (
-        <Menu mode="horizontal">
+        <Menu mode="inline" selectedKeys={currentPage} >
             {
                 MENU_ITEMS.map((item, index) => (
-                    <Menu.Item key={item.key} icon={item.icon} >
+                    <Menu.Item key={item.link} icon={item.icon} >
                         <Link to={item.link} >{item.text}</Link>
                     </Menu.Item>
                 ))
