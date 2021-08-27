@@ -1,6 +1,6 @@
 import React from 'react'
 
-function CovidForm() {
+function FamilyDetails() {
     return (
         <div>
             
@@ -8,4 +8,4 @@ function CovidForm() {
     )
 }
 
-export default CovidForm
+export default FamilyDetails
