@@ -21,16 +21,22 @@ const TabOptions = [
 function CustomTabs(props) {
 
     const {children} = props;
-    console.log(children.props.index)
+
     return (
         <Tabs defaultActiveKey='1' centered>
             {
                 TabOptions.map((tab, index) => (
                     <TabPane tab={tab.title} key={tab.key} >
-                        {children.props.index === tab.key ? children : <></>}
+                        {children[index] ? children[index] : <></>}
                     </TabPane>
                 ))
             }
+            {/* <TabPane tab='Personal Information' key='1'>
+                {children[0] ? children : <></>}
+            </TabPane>
+            <TabPane tab='Insurance Details' key='2'>
+                {children[1] ? children : <></>}
+            </TabPane> */}
         </Tabs>
     )
 }

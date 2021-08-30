@@ -25,15 +25,27 @@ const genders = [
 
 function PersonalInformation(props) {
 
-    const [gender, setGender] = useState()
+    const {
+        personalFormData, 
+        setPersonalFormData,
+        onFinish,
+    } = props
+
+    const handleDate = (value, formattedDate) => {
+        console.log(formattedDate)
+        setPersonalFormData({
+            ...personalFormData,
+            dateOfBirth: formattedDate
+        })
+    }
 
     return (
         <Form
             name="personalInformation"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
-            initialValues={{ remember: true }}
-
+            className="personalInformationForm"
+            onFinish={onFinish}
         >
             <Form.Item
                 label="Phone number"
@@ -41,7 +53,10 @@ function PersonalInformation(props) {
                 wrapperCol={{ span: 8 }}
                 rules={[{ required: true, message: 'Please input your Phone number!' }]}
             >
-                <InputNumber/>
+                <InputNumber className="inputNumberField"
+                    value={personalFormData["phoneNumber"]}
+                    onChange={(value) => setPersonalFormData({...personalFormData, phoneNumber: value})}
+                />
             </Form.Item>
 
             <Form.Item
@@ -50,7 +65,11 @@ function PersonalInformation(props) {
                 wrapperCol={{ span: 8 }}
                 rules={[{ required: true, message: 'Please enter your Email!' }]}
             >
-                <Input type="email" placeholder="abc@gmail.com" />
+                <Input 
+                    placeholder="abc@gmail.com" 
+                    value={personalFormData["email"]}
+                    onChange={(e) => setPersonalFormData({...personalFormData, email: e.target.value})}
+                />
             </Form.Item>
 
             <Form.Item
@@ -59,7 +78,11 @@ function PersonalInformation(props) {
                 wrapperCol={{ span: 8 }}
                 rules={[{ required: true, message: 'Please enter your First Name!' }]}
             >
-                <Input type="text" placeholder="Adam" />
+                <Input 
+                    placeholder="Adam" 
+                    value={personalFormData["firstName"]}
+                    onChange={(e) => setPersonalFormData({...personalFormData, firstName: e.target.value})}
+                />
             </Form.Item>
 
             <Form.Item
@@ -68,16 +91,23 @@ function PersonalInformation(props) {
                 wrapperCol={{ span: 8 }}
                 rules={[{ required: true, message: 'Please enter your Last Name!' }]}
             >
-                <Input type="text" placeholder="John" />
+                <Input 
+                    value={personalFormData["lastName"]}
+                    onChange={(e) => setPersonalFormData({...personalFormData, lastName: e.target.value})}
+                    placeholder="John" 
+                />
             </Form.Item>
 
             <Form.Item
                 label="Date of Birth"
-                name="dob"
+                name="dateOfBirth"
                 wrapperCol={{ span: 8 }}
                 rules={[{ required: true, message: 'Please enter your Date of Birth!' }]}
             >
-                <DatePicker/>
+                <DatePicker
+                    value={personalFormData["dateOfBirth"]}
+                    onChange={handleDate}
+                />
             </Form.Item>
 
             <Form.Item
@@ -88,8 +118,9 @@ function PersonalInformation(props) {
             >
                 <Radio.Group 
                     options={genders}
-                    value={gender}
-                    onChange={setGender}
+                    defaultValue={personalFormData["gender"]}
+                    value={personalFormData["gender"]}
+                    onChange={(e) => setPersonalFormData({...personalFormData, gender: e.target.value})}
                     optionType="button"
                 />
             </Form.Item>
@@ -105,6 +136,8 @@ function PersonalInformation(props) {
                     allowClear
                     maxLength={150}
                     showCount
+                    value={personalFormData["address"]}
+                    onChange={(e) => setPersonalFormData({...personalFormData, address: e.target.value})}
                 />
             </Form.Item>
 
@@ -118,7 +151,11 @@ function PersonalInformation(props) {
                             name="city"
                             rules={[{ required: true, message: 'Please enter your City!' }]}
                         >
-                            <Input type="text" placeholder="New York" />
+                            <Input 
+                                placeholder="New York" 
+                                value={personalFormData["city"]}
+                                onChange={(e) => setPersonalFormData({...personalFormData, city: e.target.value})}
+                            />
                         </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -127,7 +164,11 @@ function PersonalInformation(props) {
                             name="state"
                             rules={[{ required: true, message: 'Please enter your State!' }]}
                         >
-                            <Input type="text" placeholder="New York" />
+                            <Input 
+                                value={personalFormData["state"]}
+                                onChange={(e) => setPersonalFormData({...personalFormData, state: e.target.value})}
+                                placeholder="New York" 
+                            />
                         </Form.Item>
                         
                     </Col>
@@ -135,6 +176,8 @@ function PersonalInformation(props) {
                         <Form.Item
                             label="ZIP Code"
                             name="zip"
+                            value={personalFormData["zip"]}
+                            onChange={(e) => setPersonalFormData({...personalFormData, zip: e.target.value})}
                             rules={[{ required: true, message: 'Please enter your ZIP Code!' }]}
                         >
                             <InputNumber max={99999} placeholder="12345" />

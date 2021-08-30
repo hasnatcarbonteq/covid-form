@@ -4,9 +4,21 @@ import { InboxOutlined } from '@ant-design/icons';
 
 const { Dragger } = Upload;
 
+const file = []
 const options = {
     // name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    // action: file.push,
+    beforeUpload(file) {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must smaller than 2MB!');
+        }
+        return isJpgOrPng && isLt2M;
+    },
     onChange(info) {
         const { status } = info.file;
         if (status !== 'uploading') {
@@ -25,7 +37,7 @@ const options = {
 
 function DragDrop(props) {
     return (
-        <Dragger {...options}>
+        <Dragger {...options} {...props} >
             <p className="ant-upload-drag-icon"><InboxOutlined /></p>
             <p className="ant-upload-text">Click or drag file to this area to upload</p>
             <p className="ant-upload-hint">Support for a single </p>
