@@ -5,131 +5,108 @@ import {
     Select,
     Switch,
     Checkbox,
+    Typography,
+    Upload,
+    Button,
 } from 'antd'
-import DragDrop from '../common/DragDrop/DragDrop.jsx';
+import { UploadOutlined } from '@ant-design/icons';
+const {Title} = Typography
 
 const { Option } = Select;
-
-const InsuranceCompanies = [
-    {
-        value: 'stateFarm',
-        label: 'State Farm',
-    },
-    {
-        value: 'geico',
-        label: 'Geico',
-    },
-    {
-        value: 'progressive',
-        label: 'Progressive',
-    },
-    {
-        value: 'allState',
-        label: 'Allstate',
-    },
-    {
-        value: 'usaa',
-        label: 'USAA',
-    },
-    {
-        value: 'libertyMutual',
-        label: 'Liberty Mutual',
-    },
-    {
-        value: 'farmersInsurance',
-        label: 'Farmers Insurance',
-    },
-    {
-        value: 'nationwide',
-        label: 'Nationwide',
-    },
-    {
-        value: 'americanFamilyInsurance',
-        label: 'American Family Insurance',
-    },
-    {
-        value: 'travelers',
-        label: 'Travelers',
-    },
-]
 
 function InsuranceDetails(props) {
 
     const {
-        isInsured, 
-        setIsInsured,
-        insuranceCompany,
-        setInsuranceCompany,
+        insuranceData,
+        setInsuranceData,
+        InsuranceCompanies,
     } = props;
+
+    const normFile = (e) => {
+        if (Array.isArray(e)) {
+          return e;
+        }
+        return e.fileList;
+    };
+
+    const dummyRequest = ({ file, onSuccess }) => {
+        setTimeout(() => {
+          onSuccess("ok");
+        }, 0);
+    };
     return (
-        <Form
-            name="insuranceDetails"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-        >
+        <>
+            <Title level={3}>Insurance Details</Title>
             <Form.Item
-                name="insuranceCheckbox"
+                name="isInsured"
                 label="Are you insuranced?"
                 wrapperCol={{ span: 8 }}
-                rules={[{ required: true, message: 'Please select!' }]}
+                valuePropName="checked"
+                initialValue={insuranceData.isInsured}
             >
                 <Switch
-                    checked={isInsured}
-                    onChange={setIsInsured}
+                    // checked={insuranceData['isInsured']}
+                    onChange={setInsuranceData}
                 />
             </Form.Item>
-            {isInsured ? (
-                <>
-                    <Form.Item
-                        name="paperCollection"
-                        label="Submit papers"
-                        wrapperCol={{ span: 8 }}
-                        rules={[{ required: true, message: 'Please submit!' }]}
-                    >
-                        <DragDrop
-                            name="insurance-papers"
-                            className="avatar-uploader"
-                            listType="picture-card"
-                            maxCount={2}
-                            {...props}
-                        />
-                    </Form.Item>
+            <Form.Item
+                noStyle
+                shouldUpdate={(prevValues, currentValues) => prevValues.isInsured !== currentValues.isInsured}
+            >
+                {({ getFieldValue }) => {
+                    return getFieldValue('isInsured') ? (
+                        <>
+                            <Form.Item
+                                name="insuranceDocuments"
+                                label="Submit papers"
+                                wrapperCol={{ span: 8 }}
+                                valuePropName="fileList"
+                                getValueFromEvent={normFile}
+                                rules={[{ required: true, message: 'Please submit!' }]}
+                            >
+                                <Upload name="logo"  listType="picture" customRequest={dummyRequest}>
+                                    <Button icon={<UploadOutlined />}>Click to upload</Button>
+                                </Upload>
+                            </Form.Item>
+                            <Form.Item
+                                name="insuranceCompany"
+                                label="Insurance Company"
+                                wrapperCol={{ span: 8 }}
+                                rules={[{ required: true, message: 'Please select insurance company!' }]}
+                            >
+                                <Select
+                                    placeholder="Select Insurance Company"
+                                    onChange={(e) => setInsuranceData({...insuranceData, insuranceCompany: e})}
+                                >
+                                    {InsuranceCompanies.map((company) => (
+                                        <Option key={company.value} value={company.value}>
+                                            {company.label}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item 
+                                name="insurancePolicyNumber"
+                                label="Insurance Number"
+                                wrapperCol={{ span: 8 }}
+                                rules={[{ required: true, message: 'Please input your insurance number!' }]}
+                            >
+                                <InputNumber style={{width: '100%'}}/>
+                            </Form.Item>
+                        </>
+                    ) : <Form.Item
+                            name="isAttested"
+                            label="insurance attestation"
+                            wrapperCol={{ span: 8 }}
+                            valuePropName="checked"
+                            rules={[{ required: true, message: 'Please check!' }]}
+                        >
+                            <Checkbox >I have attested that I am not insured</Checkbox>
+                        </Form.Item>
+                }}
 
-                    <Form.Item
-                        name="selectCompany"
-                        label="Select your insurance Company"
-                        wrapperCol={{ span: 8 }}
-                        rules={[{ required: true, message: 'Please select one from options!' }]}
-                    >
-                        <Select defaultValue={insuranceCompany} onChange={setInsuranceCompany} >
-                            {
-                                InsuranceCompanies.map(company => (
-                                    <Option value={company.value}>{company.label}</Option>
-                                ))
-                            }
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item 
-                        name="insuranceNumber"
-                        label="Insurance Number"
-                        wrapperCol={{ span: 8 }}
-                        rules={[{ required: true, message: 'Please input your insurance number!' }]}
-                    >
-                        <InputNumber/>
-                    </Form.Item>
-                </>
-            ) : (
-                <Form.Item
-                    name="insuranceAttestation"
-                    label="insurance attestation"
-                    wrapperCol={{ span: 8 }}
-                    rules={[{ required: true, message: 'Please submit!' }]}
-                >
-                    <Checkbox />
-                </Form.Item>
-            )}
-        </Form>
+            </Form.Item>
+        </>
     )
 }
 

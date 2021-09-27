@@ -1,16 +1,19 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {
     Form, 
     Input, 
-    Button,
+    Typography,
     InputNumber,
     DatePicker,
     Radio,
     Row, 
     Col,
+    Upload,
+    Button,
 } from 'antd'
-import DragDrop from '../common/DragDrop/DragDrop.jsx';
+import { UploadOutlined } from '@ant-design/icons';
 const {TextArea} = Input
+const {Title} = Typography
 
 const genders = [
     {
@@ -28,7 +31,6 @@ function PersonalInformation(props) {
     const {
         personalFormData, 
         setPersonalFormData,
-        onFinish,
     } = props
 
     const handleDate = (value, formattedDate) => {
@@ -39,23 +41,31 @@ function PersonalInformation(props) {
         })
     }
 
+    const normFile = (e) => {
+        if (Array.isArray(e)) {
+          return e;
+        }
+        return e && e.fileList;
+    };
+
+    const dummyRequest = ({ file, onSuccess }) => {
+        setTimeout(() => {
+          onSuccess("ok");
+        }, 0);
+    };
+
     return (
-        <Form
-            name="personalInformation"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            className="personalInformationForm"
-            onFinish={onFinish}
-        >
+        <>
+            <Title level={3}>Personal Information</Title>
             <Form.Item
                 label="Phone number"
                 name="phoneNumber"
                 wrapperCol={{ span: 8 }}
-                rules={[{ required: true, message: 'Please input your Phone number!' }]}
+                rules={[{ required: true, message: 'Phone Number is required!',}]}
             >
                 <InputNumber className="inputNumberField"
-                    value={personalFormData["phoneNumber"]}
-                    onChange={(value) => setPersonalFormData({...personalFormData, phoneNumber: value})}
+                    placeholder="+92-3030213542"
+                    
                 />
             </Form.Item>
 
@@ -63,12 +73,12 @@ function PersonalInformation(props) {
                 label="Email"
                 name="email"
                 wrapperCol={{ span: 8 }}
-                rules={[{ required: true, message: 'Please enter your Email!' }]}
+                rules={[{ required: true, message: 'Email is required!' }]}
             >
                 <Input 
                     placeholder="abc@gmail.com" 
-                    value={personalFormData["email"]}
-                    onChange={(e) => setPersonalFormData({...personalFormData, email: e.target.value})}
+                    // value={personalFormData["email"]}
+                    // onChange={(e) => setPersonalFormData({...personalFormData, email: e.target.value})}
                 />
             </Form.Item>
 
@@ -76,12 +86,12 @@ function PersonalInformation(props) {
                 label="First Name"
                 name="firstName"
                 wrapperCol={{ span: 8 }}
-                rules={[{ required: true, message: 'Please enter your First Name!' }]}
+                rules={[{ required: true, message: 'First Name is required!' }]}
             >
                 <Input 
                     placeholder="Adam" 
-                    value={personalFormData["firstName"]}
-                    onChange={(e) => setPersonalFormData({...personalFormData, firstName: e.target.value})}
+                    // value={personalFormData["firstName"]}
+                    // onChange={(e) => setPersonalFormData({...personalFormData, firstName: e.target.value})}
                 />
             </Form.Item>
 
@@ -92,8 +102,8 @@ function PersonalInformation(props) {
                 rules={[{ required: true, message: 'Please enter your Last Name!' }]}
             >
                 <Input 
-                    value={personalFormData["lastName"]}
-                    onChange={(e) => setPersonalFormData({...personalFormData, lastName: e.target.value})}
+                    // value={personalFormData["lastName"]}
+                    // onChange={(e) => setPersonalFormData({...personalFormData, lastName: e.target.value})}
                     placeholder="John" 
                 />
             </Form.Item>
@@ -105,8 +115,8 @@ function PersonalInformation(props) {
                 rules={[{ required: true, message: 'Please enter your Date of Birth!' }]}
             >
                 <DatePicker
-                    value={personalFormData["dateOfBirth"]}
-                    onChange={handleDate}
+                    // value={personalFormData["dateOfBirth"]}
+                    // onChange={handleDate}
                 />
             </Form.Item>
 
@@ -118,9 +128,8 @@ function PersonalInformation(props) {
             >
                 <Radio.Group 
                     options={genders}
-                    defaultValue={personalFormData["gender"]}
-                    value={personalFormData["gender"]}
-                    onChange={(e) => setPersonalFormData({...personalFormData, gender: e.target.value})}
+                    // value={personalFormData["gender"]}
+                    // onChange={(e) => setPersonalFormData({...personalFormData, gender: e.target.value})}
                     optionType="button"
                 />
             </Form.Item>
@@ -136,25 +145,26 @@ function PersonalInformation(props) {
                     allowClear
                     maxLength={150}
                     showCount
-                    value={personalFormData["address"]}
-                    onChange={(e) => setPersonalFormData({...personalFormData, address: e.target.value})}
+                    // value={personalFormData["address"]}
+                    // onChange={(e) => setPersonalFormData({...personalFormData, address: e.target.value})}
                 />
             </Form.Item>
 
-            <Form.Item
-            wrapperCol={{ offset: 7 }}
-            >
+            <Form.Item wrapperCol={{ offset: 7 }}>
                 <Row>
                     <Col span={6}>
                         <Form.Item
                             label="City"
                             name="city"
-                            rules={[{ required: true, message: 'Please enter your City!' }]}
+                            rules={[{ 
+                                required: true,
+                                message: 'Please enter your City!'
+                                }]}
                         >
                             <Input 
                                 placeholder="New York" 
-                                value={personalFormData["city"]}
-                                onChange={(e) => setPersonalFormData({...personalFormData, city: e.target.value})}
+                                // value={personalFormData["city"]}
+                                // onChange={(e) => setPersonalFormData({...personalFormData, city: e.target.value})}
                             />
                         </Form.Item>
                     </Col>
@@ -165,44 +175,44 @@ function PersonalInformation(props) {
                             rules={[{ required: true, message: 'Please enter your State!' }]}
                         >
                             <Input 
-                                value={personalFormData["state"]}
-                                onChange={(e) => setPersonalFormData({...personalFormData, state: e.target.value})}
+                                // value={personalFormData["state"]}
+                                // onChange={(e) => setPersonalFormData({...personalFormData, state: e.target.value})}
                                 placeholder="New York" 
                             />
                         </Form.Item>
-                        
                     </Col>
                     <Col span={6}>
                         <Form.Item
                             label="ZIP Code"
                             name="zip"
-                            value={personalFormData["zip"]}
-                            onChange={(e) => setPersonalFormData({...personalFormData, zip: e.target.value})}
                             rules={[{ required: true, message: 'Please enter your ZIP Code!' }]}
                         >
-                            <InputNumber max={99999} placeholder="12345" />
+                            <InputNumber 
+                                max={99999} 
+                                placeholder="12345" 
+                            />
                         </Form.Item>
                     </Col>
                 </Row>
             </Form.Item>
 
             <Form.Item
-                wrapperCol={{ offset: 8, span: 8 }}
+                label="ID Snapshot"
+                name="idSnap"
+                wrapperCol={{ span: 8 }}
+                valuePropName="fileList"
+                getValueFromEvent={normFile}
+                rules={[{ required: true, message: 'Please upload your ID Snapshot!' }]}
             >
-                <DragDrop
-                    name="avatar"
-                    className="avatar-uploader"
-                    listType="picture-card"
-                    {...props}
-                />
+                <Upload 
+                    name="logo"  
+                    listType="picture" 
+                    customRequest={dummyRequest}>
+                    <Button icon={<UploadOutlined />}>Click to upload</Button>
+                </Upload>
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit">
-                Submit
-                </Button>
-            </Form.Item>
-        </Form>
+        </>
     )
 }
 

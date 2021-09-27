@@ -1,15 +1,63 @@
 import React, {useState, useEffect} from 'react'
-import MainLayout from '../../components/common/MainLayout/MainLayout.jsx';
-import CustomTabs from '../../components/common/CustomTabs/CustomTabs.jsx';
+import {
+    Button,
+    Form,
+    Space,
+} from 'antd'
+import MainLayout from '../../Components/Common/MainLayout/MainLayout.jsx';
 import PersonalInformation from '../../Components/PersonalInformation/PersonalInformation.jsx';
 import InsuranceDetails from '../../Components/InsuranceDetails/InsuranceDetails.jsx';
 import FamilyDetails from '../../Components/FamilyDetails/FamilyDetails.jsx';
 
+const InsuranceCompanies = [
+    {
+        value: 'stateFarm',
+        label: 'State Farm',
+    },
+    {
+        value: 'geico',
+        label: 'Geico',
+    },
+    {
+        value: 'progressive',
+        label: 'Progressive',
+    },
+    {
+        value: 'allState',
+        label: 'Allstate',
+    },
+    {
+        value: 'usaa',
+        label: 'USAA',
+    },
+    {
+        value: 'libertyMutual',
+        label: 'Liberty Mutual',
+    },
+    {
+        value: 'farmersInsurance',
+        label: 'Farmers Insurance',
+    },
+    {
+        value: 'nationwide',
+        label: 'Nationwide',
+    },
+    {
+        value: 'americanFamilyInsurance',
+        label: 'American Family Insurance',
+    },
+    {
+        value: 'travelers',
+        label: 'Travelers',
+    },
+]
+
 function SignupContainer(props) {
 
+    const [form] = Form.useForm();
     // personal information data
     const [personalFormData, setPersonalFormData] = useState({
-        phoneNumber: '',
+        phoneNumber: null,
         email: '',
         firstName: '',
         lastName: '',
@@ -19,44 +67,94 @@ function SignupContainer(props) {
         city: '',
         state: '',
         zip: '',
-        idSnap: '',
+        idSnap: [],
     })
 
     // insurance details data
-    const [isInsured, setIsInsured] = useState(false)
-    const [insuranceCompany, setInsuranceCompany] = useState('')
+    const [insuranceData, setInsuranceData] = useState({
+        isInsured: false,
+        insuranceProvider: '',
+        insurancePolicyNumber: '',
+        insuranceDocuments: [],
+        isAttested: true,
+    })
+    
 
     // family details data
     const [insuranceStatus, setInsuranceStatus] = useState("Other")
+    const [insuranceOptions, setInsuranceOptions] = useState([
+        {
+            label: "Same",
+            value: "Same"
+        },
+        {   
+            label: "Other",
+            value: "Other"
+        },
+        {
+            label: "None",
+            value: "None"
+        }
+    ])
+
+    const handleInsuranceStatusChange = (value) => {
+        setInsuranceData({...insuranceData, isInsured: value})
+        !value && setInsuranceOptions([{
+            label: "Same",
+            value: "Same",
+            disabled: false
+        },
+        {   
+            label: "Other",
+            value: "Other"
+        },
+        {
+            label: "None",
+            value: "None"
+        }]) 
+    }
 
     // functions
 
-    const handlePersonalFormData = (data) => {
+    const handleSubmit = (data) => {
         console.log(data)
     }
 
+    
     return (
-        <MainLayout title="Sign Up Form" {...props}>
-            <CustomTabs {...props} >
+        <MainLayout title="Sign Up Form" {...props}>            
+            <Form
+                name="personalInformation"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                className="personalInformationForm"
+                onFinish={handleSubmit}
+                form={form}
+            >
                 <PersonalInformation 
-                    index="1" 
                     personalFormData={personalFormData}
                     setPersonalFormData={setPersonalFormData}
-                    onFinish={handlePersonalFormData}
+                    {...props} 
                 />
                 <InsuranceDetails 
-                    index="2"
-                    isInsured={isInsured}
-                    setIsInsured={setIsInsured}
-                    insuranceCompany={insuranceCompany}
-                    setInsuranceCompany={setInsuranceCompany}
+                    insuranceData={insuranceData}
+                    setInsuranceData={handleInsuranceStatusChange}
+                    InsuranceCompanies={InsuranceCompanies}
+                    {...props} 
                 />
-                <FamilyDetails
-                    index="3"
+                <FamilyDetails 
                     insuranceStatus={insuranceStatus}
+                    insuranceOptions={insuranceOptions}
                     setInsuranceStatus={setInsuranceStatus}
-                />
-            </CustomTabs>
+                    InsuranceCompanies={InsuranceCompanies}
+                {...props} />
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Button type="primary" htmlType="submit"  >
+                    Submit
+                    </Button>
+                </Form.Item>
+            </Form>
+            
         </MainLayout>
     )
 }
