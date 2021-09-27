@@ -1,35 +1,47 @@
-import React from 'react'
-import {Upload, message} from 'antd'
+import React, {useState} from 'react'
+import {Upload, message, Button} from 'antd'
 import { InboxOutlined } from '@ant-design/icons';
 
-const { Dragger } = Upload;
-
-const options = {
-    // name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    onChange(info) {
-        const { status } = info.file;
-        if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-    onDrop(e) {
-        console.log('Dropped files', e.dataTransfer.files);
-    },
-}
 
 function DragDrop(props) {
+
+    const {onSelectedImage} = props
+    const [files, setFiles] = useState([])
+    
+    const onChange = (info) => {
+        const { status } = info.file;
+        switch (status) {
+            case 'uploading':
+                setFiles([info.file]);
+                break;
+            case 'done':
+                message.success(`${info.file.name} file uploaded successfully.`);
+                setFiles([info.file]);
+                return [info.file]
+                break;
+            case 'error':
+                message.error(`${info.file.name} file upload failed.`);
+                setFiles([]);
+                break;
+            default:
+                setFiles([]);
+        }
+    }
+
+    const dummyRequest = ({ file, onSuccess }) => {
+        setTimeout(() => {
+          onSuccess("ok");
+        }, 0);
+    };
     return (
-        <Dragger {...options}>
-            <p className="ant-upload-drag-icon"><InboxOutlined /></p>
-            <p className="ant-upload-text">Click or drag file to this area to upload</p>
-            <p className="ant-upload-hint">Support for a single </p>
-        </Dragger>
+        <Upload 
+            {...props} 
+            fileList={files}
+            customRequest={dummyRequest}
+            onChange={onChange}
+            >
+            <Button icon={<InboxOutlined/>} ></Button>
+        </Upload>
     )
 }
 

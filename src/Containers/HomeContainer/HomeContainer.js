@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 
-import MainLayout from '../../components/common/MainLayout/MainLayout.jsx';
+import MainLayout from '../../Components/Common/MainLayout/MainLayout.jsx';
 
 
 function Home(props) {

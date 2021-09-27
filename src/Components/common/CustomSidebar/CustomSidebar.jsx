@@ -23,10 +23,6 @@ const MENU_ITEMS = [
 
 function Navbar(props) {
 
-    const handleClick = (e) => {
-        props.history.push(e.key)
-    }
-
     const currentPage = props.history.location.pathname;
 
     return (
